@@ -1,0 +1,167 @@
+"""
+Programmer: Jasmine Sullivan  
+Purpose: This is a Wordle game simulator 
+Date: 06/05/2025 
+"""
+
+import random #imports the random module
+ATTEMPTS = 5
+LETTERS = 5
+
+def load_words(filename):
+    """
+    Loads words from a file and returns them as a list.
+    """
+    with open(filename, "r") as file:
+        return file.read().splitlines()
+    
+target_words = load_words("target_words.txt")
+all_words = load_words("all_words.txt")
+
+def display_instructions():
+    """
+    Displays the game instructions.
+    """
+    print("Welcome to Wordle!\nTo play this game you will guess a five letter word.\nThe word will be given a five digit score (0, 1, 2)")
+    print()
+    print("A score of 0 means the letter in the word you guessed is not in the correct word :(")
+    print("A score of 1 means the letter in the word you guessed is in the correct word but not in the correct place :|")
+    print("A score of 2 means the letter in the word you guessed is correct AND in the correct place :)")
+    print()
+
+def get_guess_word(target_words):
+    """
+    Returns the correct word that the user is trying to guess.
+
+    Parameters:
+        target_words (list): List of all the words that could be the correct_word
+
+    Returns:
+        str: a random word selected from the target_words list. 
+    """
+    return random.choice(target_words)
+    #return "hello"  # Fixed for testing
+
+def validate_guess(user_guess, all_words):
+    """
+    Check if the guessed word is valid (exists in the all_words list)
+
+    Parameters:
+        guess (str): The word guessed by the player.
+        all_words (list): The list of all valid words.
+
+    Returns:
+        bool: True if guess is valid, False otherwise.
+    """
+    return user_guess in all_words
+
+def score_guess(user_guess, correct_word):
+    """
+    Score the user's guess against the correct word.
+
+    Parameters:
+        user_guess (str): The word guessed by the player.
+        correct_word (str): The word to be guessed.
+
+    Returns:
+        list: A list of 5 integers representing the score.
+            2 = correct letter and position,
+            1 = correct letter wrong position,
+            0 = letter not in the word.
+
+    Example:
+        score = score_guess("helps", "hello")  # Returns [2, 2, 2, 0, 0]
+    """
+    guess_list = list(user_guess)
+    correct_list = list(correct_word)
+    score = [0] * LETTERS
+
+    # Correct letters in correct position
+    for index in range(LETTERS):
+        if guess_list[index] == correct_list[index]:
+            score[index] = 2
+            guess_list[index] = None  # Mark as used
+            correct_list[index] = None  # Mark as used
+
+    # Correct letters in wrong position
+    for index in range(LETTERS):
+        if guess_list[index] is not None and guess_list[index] in correct_list:
+            score[index] = 1
+            correct_index = correct_list.index(guess_list[index])
+            correct_list[correct_index] = None
+
+    return score
+
+def handle_guess(correct_word, all_words):
+    """
+    Gets the user's guess, checks its vaild, score it, then returns result.
+
+    Parameters:
+        correct_word (str): The word to be guessed and checked against
+        all_words (str): The list of all valid words.
+
+    Returns:
+        Tuple: The string of the user's guess and five integers of the score. 
+    """
+    while True:
+        user_guess = input("Enter a 5 letter word: ").lower().strip()
+        if validate_guess(user_guess, all_words):
+            score = score_guess(user_guess, correct_word)
+            return user_guess, score
+        else:
+            print("Invalid Word!") 
+
+def save_score(target_word, tries, success):                
+    """
+    Saves the game result to a file named 'wordle_results.txt'.
+
+    Parameters:
+        target_word (str): The correct word.
+        tries (int): Number of attempts used.
+        success (bool): Whether the user guessed correctly.
+    """
+    with open("wordle_results.txt", "a") as file:
+        if success:
+            result = "Success"
+        else:
+            result = "Failed"
+        file.write("Target Word: " + target_word + " | Tries: " + str(tries) + " | Result: " + result + "\n")
+
+def game(correct_word, all_words):
+    """
+    Run the main game loop for up to 5 tries.
+
+    Parameters:
+        correct_word (str): The word to be guessed and checked against
+        all_words (str): The list of all valid words.
+    """
+    tries = 0
+    success = False
+    while tries < ATTEMPTS:
+        user_guess, score = handle_guess(correct_word, all_words)
+        print("Score               :", score)
+
+        if user_guess == correct_word:
+            print("Amazing Job! You got the WORDle :)")
+            success = True
+            break
+        else:
+            tries += 1
+            if tries < ATTEMPTS:
+                print("Try Again!")
+            else:
+                print("Wrong! The correct word was:", correct_word)
+                
+
+    final_tries = tries # Will still count the last failed try
+    save_score(correct_word, final_tries, success)               
+
+print("Name: ", __name__)
+
+if __name__ == "__main__":
+    correct_word = get_guess_word(target_words)
+    display_instructions()
+    game(correct_word, all_words)
+else:
+    print("Tests are running")
+
