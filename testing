@@ -1,0 +1,97 @@
+"""
+Programmer: Jasmine Sullivan 
+Purpose: To test the main Wordle program
+Date: 06/05/2025 
+"""
+
+import WORDLE
+
+"""
+Testing for the desired outcome for the score_guess function four times. 
+"""
+
+#Test One (score)
+user_guess = "helps"
+correct_word = "money"
+
+result = WORDLE.score_guess(user_guess, correct_word)
+
+try:
+    assert result == [0, 1, 0, 0, 0]
+    print("Test One (score) passed")
+except:
+    print("Test One (score) did not pass")
+
+#Test Two (score)
+user_guess = "hello"
+correct_word = "hello"
+
+result = WORDLE.score_guess(user_guess, correct_word)
+
+try:
+    assert result == [2, 2, 2, 2, 2]
+    print("Test Two(score) passed")
+except:
+    print("Test Two(score) did not pass")
+
+#Test Three (score)
+user_guess = "lolly"
+correct_word = "hello"
+
+result = WORDLE.score_guess(user_guess, correct_word)
+
+try:
+    assert result == [0, 1, 2, 2, 0]
+    print("Test Three (score) passed")
+except:
+    print("Test Three (score) did not pass")
+
+#Test Four
+user_guess = "crack"
+correct_word = "money"
+
+result = WORDLE.score_guess(user_guess, correct_word)
+
+try:
+    assert result == [0, 0, 0, 0, 0]
+    print("Test Four (score) passed")
+except:
+    print("Test Four (score) did not pass")
+
+
+"""
+Testing the load_words function for the target_words text three time. 
+"""
+
+#Test One (load_words)
+filename = "target_words.txt"
+
+result = WORDLE.load_words(filename)
+
+try:
+    assert result[1] == "abase"
+    print("Test One (load_words) passed")
+except:
+    print("Test One (load_words) did not pass")
+
+#Test Two (load_words)
+filename = "target_words.txt"
+
+result = WORDLE.load_words(filename)
+
+try:
+    assert result[-2] == "zesty"
+    print("Test Two (load_words) passed")
+except:
+    print("Test Two (load_words) did not pass")
+
+#Test Three (load_words)
+filename = "target_words.txt"
+
+result = WORDLE.load_words(filename)
+
+try:
+    assert result[1634] == "saint"
+    print("Test Three (load_words) passed")
+except:
+    print("Test Three (load_words) did not pass")
