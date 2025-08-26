@@ -15,5 +15,8 @@ To obtain and use this application, you must:
 ## Contributing:
 While this is a public repository, please refrain from suggesting changes or reporting bugs.
 
+*Hey Jas, I've edited your readme so you can test PR's!*
+
+
 ## Authors: 
 - Jasmine Sullivan (aka, J-man-2408)
